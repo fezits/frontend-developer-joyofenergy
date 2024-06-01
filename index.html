@@ -60,7 +60,7 @@
         </section>
       </aside>
       <article class="bg-very-light-grey p3 flex-auto overflow-auto">
-        <h1 class="regular darkgray line-height-1 mb3">Energy consumption</h1>
+        <h1 class="regular darkgray line-height-1 mb3">Energy consumption <span id="daysLabel"></span></h1>
         <section class="mb3">
           <button
             class="
@@ -76,13 +76,54 @@
               bg-blue
               white
               bold
-            "
+            " onclick="loadDataByDays(7)"
+          >
+            Last 7 days
+          </button>
+          <button
+            class="
+              h5
+              inline-block
+              shadow-2
+              pl2
+              pr2
+              pt1
+              pb1
+              roundedMore
+              border-grey
+              bg-blue
+              white
+              bold
+            " onclick="loadDataByDays(15)"
+          >
+            Last 15 days
+          </button>
+        
+          <button
+            class="
+              h5
+              inline-block
+              shadow-2
+              pl2
+              pr2
+              pt1
+              pb1
+              roundedMore
+              border-grey
+              bg-blue
+              white
+              bold
+            " onclick="loadDataByDays(30)"
           >
             Last 30 days
           </button>
         </section>
-        <section class="chartHeight mb3">
+        <section class="chartHeight mb4">
           <canvas id="usageChart"></canvas>
+        </section>
+        <section class="clearfix chartHeight mb3">
+          <div class="col col-6"><canvas id="usageChart2"></canvas></div>
+          <div class="col col-6" style="height:40vh; width:40vw"><canvas id="usageChart3"></canvas></div>
         </section>
       </article>
     </div>

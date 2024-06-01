@@ -7,6 +7,7 @@ export const getReadings = async (length = 1200) => {
   }));
 };
 
+
 export const groupByDay = (readings) => {
   const groupedByDay = readings.reduce((curr, { time, value }) => {
     const readingDate = new Date(time);

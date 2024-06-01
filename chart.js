@@ -1,6 +1,8 @@
-import * as chartJs from "chart.js";
+import { Chart, Tooltip, CategoryScale, LinearScale, BarController, BarElement, ArcElement, PieController, LineElement, LineController, PointElement } from 'chart.js';
 
-let chart;
+let barChart;
+let pieChart;
+let lineChart;
 
 export const formatDateLabel = (timestamp) => {
   const date = new Date(timestamp);
@@ -14,16 +16,46 @@ export const formatDateLabel = (timestamp) => {
   return `${formatPart(day)}/${formatPart(month + 1)}`;
 };
 
-export const renderChart = (readings) => {
-  chartJs.Chart.defaults.font.size = "10px";
+const predefinedColors = [
+  'rgba(75, 192, 192, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+  'rgba(153, 102, 255, 0.2)',
+  'rgba(255, 159, 64, 0.2)',
+  'rgba(255, 99, 132, 0.2)'
+];
 
-  chartJs.Chart.register.apply(
-    null,
-    Object.values(chartJs).filter((chartClass) => chartClass.id)
+// Função para obter uma cor da paleta predefinida
+const getPredefinedColor = (index) => {
+  return predefinedColors[index % predefinedColors.length];
+};
+
+// Função para gerar um array de cores da paleta predefinida
+const generatePredefinedColors = (numColors) => {
+  const colors = [];
+  for (let i = 0; i < numColors; i++) {
+    colors.push(getPredefinedColor(i));
+  }
+  return colors;
+};
+
+export const renderChart = (readings) => {
+  // Registro dos componentes necessários
+  Chart.register(
+    Tooltip,
+    CategoryScale,
+    LinearScale,
+    LineElement,
+    LineController,
+    BarController,
+    PointElement,
+    BarElement,
+    ArcElement,
+    PieController
   );
 
   const labels = readings.map(({ time }) => formatDateLabel(time));
   const values = readings.map(({ value }) => value);
+  const backgroundColors = generatePredefinedColors(values.length);
 
   const data = {
     labels: labels,
@@ -35,35 +67,97 @@ export const renderChart = (readings) => {
         borderColor: "rgb(75, 192, 192)",
         tension: 0.1,
         borderWidth: 0.2,
-        backgroundColor: "#5A8EDA",
-        borderRadius: 10,
+        backgroundColor:backgroundColors,
+        borderRadius: 1,
       },
     ],
   };
 
-  if (chart) {
-    chart.destroy();
+  if (barChart) {
+    barChart.destroy();
   }
 
-  chart = new chartJs.Chart("usageChart", {
+  if (pieChart) {
+    pieChart.destroy();
+  }
+
+  if (lineChart) {
+    lineChart.destroy();
+  }
+
+  barChart = new Chart("usageChart", {
     type: "bar",
     data: data,
     options: {
+      interaction: {
+        intersect: false,
+        mode: 'index',
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: (tooltipItems) => {
+              return `${tooltipItems.formattedValue} kWh`;
+            },
+          },
+        },
+      },
       scales: {
         y: {
+          type: 'linear', // Especificar o tipo de escala
           grid: {
             display: false,
           },
         },
         x: {
+          type: 'category', // Especificar o tipo de escala
           grid: {
             display: false,
           },
         },
       },
+      maintainAspectRatio: false,
+    },
+  });
+
+  pieChart = new Chart("usageChart2", {
+    type: "pie",
+    data: data,
+    options: {
+      interaction: {
+        intersect: false,
+        mode: 'index',
+      },
       plugins: {
-        legend: {
-          display: false,
+        tooltip: {
+          callbacks: {
+            label: (tooltipItems) => {
+              const label = pieChart.data.labels[tooltipItems.dataIndex];
+              return `${tooltipItems.formattedValue} kWh`;
+            },
+          },
+        },
+      },
+      maintainAspectRatio: false,
+    },
+  });
+
+  lineChart = new Chart("usageChart3", {
+    type: "line",
+    data: data,
+    options: {
+      interaction: {
+        intersect: false,
+        mode: 'index',
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: (tooltipItems) => {
+              const label = lineChart.data.labels[tooltipItems.dataIndex];
+              return `${tooltipItems.formattedValue} kWh`;
+            },
+          },
         },
       },
       maintainAspectRatio: false,

@@ -1,5 +1,14 @@
 import { renderChart } from "./chart.js";
 import { getReadings, groupByDay, sortByTime } from "./reading";
 
+var daysPast = 0;
 const readings = await getReadings();
-renderChart(sortByTime(groupByDay(readings)).slice(-30));
+
+export const loadDataByDays = (days) => {
+    renderChart(sortByTime(groupByDay(readings)).slice(-days));
+    return days;
+}
+
+
+window.loadDataByDays = loadDataByDays;
+
