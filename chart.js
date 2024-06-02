@@ -1,4 +1,4 @@
-import { Chart, Tooltip, CategoryScale, LinearScale, BarController, BarElement, ArcElement, PieController, LineElement, LineController, PointElement } from 'chart.js';
+import { Chart, Tooltip, CategoryScale, LinearScale, BarController, BarElement, ArcElement, PieController, LineElement, LineController, PointElement, Legend, Filler } from 'chart.js';
 
 let barChart;
 let pieChart;
@@ -17,19 +17,23 @@ export const formatDateLabel = (timestamp) => {
 };
 
 const predefinedColors = [
-  'rgba(75, 192, 192, 0.2)',
-  'rgba(54, 162, 235, 0.2)',
-  'rgba(153, 102, 255, 0.2)',
-  'rgba(255, 159, 64, 0.2)',
-  'rgba(255, 99, 132, 0.2)'
+  
+  'rgba(100, 100, 100, 0.2)', // gray
+  'rgba(255, 0, 0, 0.2)',     // red
+  'rgba(0, 255, 0, 0.2)',     // green
+  'rgba(0, 0, 255, 0.2)',     // blue
+  'rgba(255, 255, 0, 0.2)',   // yellow
+  'rgba(255, 0, 255, 0.2)',   // Magenta
+  'rgba(0, 255, 255, 0.2)',   // cyan
+  'rgba(128, 0, 128, 0.2)',   // purple
+  'rgba(128, 128, 0, 0.2)',   // Olive
+  'rgba(0, 128, 128, 0.2)',   // Teal
 ];
 
-// Função para obter uma cor da paleta predefinida
 const getPredefinedColor = (index) => {
   return predefinedColors[index % predefinedColors.length];
 };
 
-// Função para gerar um array de cores da paleta predefinida
 const generatePredefinedColors = (numColors) => {
   const colors = [];
   for (let i = 0; i < numColors; i++) {
@@ -39,9 +43,11 @@ const generatePredefinedColors = (numColors) => {
 };
 
 export const renderChart = (readings) => {
-  // Registro dos componentes necessários
+
   Chart.register(
+    Legend,
     Tooltip,
+    Filler,
     CategoryScale,
     LinearScale,
     LineElement,
@@ -55,19 +61,20 @@ export const renderChart = (readings) => {
 
   const labels = readings.map(({ time }) => formatDateLabel(time));
   const values = readings.map(({ value }) => value);
+  const details = readings.map(({ details }) => details);
   const backgroundColors = generatePredefinedColors(values.length);
 
   const data = {
     labels: labels,
     datasets: [
       {
-        label: "kWh usage",
+        label: "kWh usage per day",
         data: values,
         fill: true,
         borderColor: "rgb(75, 192, 192)",
         tension: 0.1,
         borderWidth: 0.2,
-        backgroundColor:backgroundColors,
+        backgroundColor: [ '#1F618D', '#F1C40F', '#27AE60', '#884EA0', '#D35400', '#CB4335' ],
         borderRadius: 1,
       },
     ],
@@ -104,36 +111,58 @@ export const renderChart = (readings) => {
       },
       scales: {
         y: {
-          type: 'linear', // Especificar o tipo de escala
+          type: 'linear', 
           grid: {
             display: false,
           },
         },
         x: {
-          type: 'category', // Especificar o tipo de escala
+          type: 'category', 
           grid: {
             display: false,
           },
         },
       },
       maintainAspectRatio: false,
+      onHover: (event, chartElement) => {
+        event.native.target.style.cursor = chartElement.length ? 'pointer' : 'default';
+      },
+      onClick: (event, elements) => {
+        if (elements.length > 0) {
+          const firstElement = elements[0];
+          const label = barChart.data.labels[firstElement.index];
+          const value = barChart.data.datasets[firstElement.datasetIndex].data[firstElement.index];
+          const details = readings[firstElement.index].details;
+
+          updatePieChart(label, details);
+        }
+      }
     },
   });
 
   pieChart = new Chart("usageChart2", {
     type: "pie",
-    data: data,
+    data: {
+      datasets: [{
+        data: [],
+        backgroundColor: [],
+      }]
+    },
     options: {
       interaction: {
         intersect: false,
         mode: 'index',
+       
       },
       plugins: {
+       
+        
         tooltip: {
+          
           callbacks: {
             label: (tooltipItems) => {
               const label = pieChart.data.labels[tooltipItems.dataIndex];
-              return `${tooltipItems.formattedValue} kWh`;
+              return `${label}: ${tooltipItems.formattedValue} kWh`;
             },
           },
         },
@@ -141,6 +170,7 @@ export const renderChart = (readings) => {
       maintainAspectRatio: false,
     },
   });
+  
 
   lineChart = new Chart("usageChart3", {
     type: "line",
@@ -164,3 +194,23 @@ export const renderChart = (readings) => {
     },
   });
 };
+
+const updatePieChart = (label, details) => {
+  const deviceLabels = Object.keys(details);
+  const deviceValues = Object.values(details);
+
+  const data = {
+    labels: deviceLabels,
+    datasets: [{
+      label: `Details for ${label}`,
+      data: deviceValues,
+      backgroundColor: generatePredefinedColors(deviceValues.length),
+    }]
+  };
+
+  if (pieChart) {
+    pieChart.data = data;
+    pieChart.update();
+  }
+};
+
