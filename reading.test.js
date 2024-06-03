@@ -28,14 +28,42 @@ describe("#reading", function () {
   describe("#groupedByDay", () => {
     it("should get readings with timestamps and values", () => {
       const readings = [
-        { time: new Date(2021, 12, 17, 10, 24).getTime(), value: 50 },
+        { time: new Date(2021, 12, 17, 10, 24).getTime(), value: 50, 
+          details: 
+          {
+            AirConditioner: 0.444,
+            WiFiRouter: 0.222,
+            Humidifier: 0.777,
+            SmartTV: 1.888,
+            Diffuser: 0.888,
+            Refrigerator: 2.2
+          } 
+        },
         {
           time: new Date(2021, 12, 17, 9, 24).getTime(),
           value: 40,
+          details: 
+          {
+            AirConditioner: 1.444,
+            WiFiRouter: 2.222,
+            Humidifier: 3.777,
+            SmartTV: 4.888,
+            Diffuser: 5.888,
+            Refrigerator: 3.2
+          } 
         },
         {
           time: new Date(2021, 12, 16, 10, 34).getTime(),
           value: 35,
+          details: 
+          {
+            AirConditioner: 1.444,
+            WiFiRouter: 2.222,
+            Humidifier: 3.777,
+            SmartTV: 4.888,
+            Diffuser: 5.888,
+            Refrigerator: 3.2
+          } 
         },
       ];
 
@@ -47,18 +75,56 @@ describe("#reading", function () {
 
     it("should get readings grouped by day", async () => {
       const readings = [
-        { time: new Date(2021, 12, 17, 10, 24).getTime(), value: 50 },
+        { time: new Date(2021, 12, 17, 10, 24).getTime(), 
+          value: 50,
+          details: 
+          {
+            AirConditioner: 0.444,
+            WiFiRouter: 0.222,
+            Humidifier: 0.777,
+            SmartTV: 1.888,
+            Diffuser: 0.888,
+            Refrigerator: 2.2
+          }  
+        },
         {
           time: new Date(2021, 12, 17, 9, 24).getTime(),
           value: 40,
+          details: 
+          {
+            AirConditioner: 1.444,
+            WiFiRouter: 2.222,
+            Humidifier: 3.777,
+            SmartTV: 4.888,
+            Diffuser: 5.888,
+            Refrigerator: 3.2
+          }
         },
         {
           time: new Date(2021, 12, 16, 10, 34).getTime(),
           value: 35,
+          details: 
+          {
+            AirConditioner: 2.444,
+            WiFiRouter: 3.222,
+            Humidifier: 4.777,
+            SmartTV: 5.888,
+            Diffuser: 6.888,
+            Refrigerator: 2.2
+          }
         },
         {
           time: new Date(2021, 12, 15, 11, 34).getTime(),
           value: 25,
+          details: 
+          {
+            AirConditioner: 3.444,
+            WiFiRouter: 4.222,
+            Humidifier: 5.777,
+            SmartTV: 6.888,
+            Diffuser: 7.888,
+            Refrigerator: 1.2
+          }
         },
       ];
 
@@ -80,18 +146,56 @@ describe("#reading", function () {
   describe("#sortByTime", () => {
     it("should put latest reading to the last", () => {
       const readings = [
-        { time: new Date(2021, 12, 17, 10, 24).getTime(), value: 50 },
+        { time: new Date(2021, 12, 17, 10, 24).getTime(), 
+          value: 50,
+          details: 
+          {
+            AirConditioner: 0.444,
+            WiFiRouter: 0.222,
+            Humidifier: 0.777,
+            SmartTV: 1.888,
+            Diffuser: 0.888,
+            Refrigerator: 2.2
+          }
+         },
         {
           time: new Date(2021, 12, 17, 9, 24).getTime(),
           value: 40,
+          details: 
+          {
+            AirConditioner: 1.444,
+            WiFiRouter: 2.222,
+            Humidifier: 3.777,
+            SmartTV: 4.888,
+            Diffuser: 5.888,
+            Refrigerator: 3.2
+          }
         },
         {
           time: new Date(2021, 12, 17, 11, 34).getTime(),
           value: 35,
+          details: 
+          {
+            AirConditioner: 2.444,
+            WiFiRouter: 3.222,
+            Humidifier: 4.777,
+            SmartTV: 5.888,
+            Diffuser: 6.888,
+            Refrigerator: 2.2
+          }
         },
         {
           time: new Date(2021, 12, 15, 11, 34).getTime(),
           value: 25,
+          details: 
+          {
+            AirConditioner: 3.444,
+            WiFiRouter: 4.222,
+            Humidifier: 5.777,
+            SmartTV: 6.888,
+            Diffuser: 7.888,
+            Refrigerator: 1.2
+          }
         },
       ];
 
@@ -100,37 +204,113 @@ describe("#reading", function () {
       expect(sortedReading[0]).toMatchObject({
         time: new Date(2021, 12, 15, 11, 34).getTime(),
         value: 25,
+        details: 
+        {
+          AirConditioner: 3.444,
+          WiFiRouter: 4.222,
+          Humidifier: 5.777,
+          SmartTV: 6.888,
+          Diffuser: 7.888,
+          Refrigerator: 1.2
+        }
       });
       expect(sortedReading[3]).toMatchObject({
         time: new Date(2021, 12, 17, 11, 34).getTime(),
         value: 35,
+        details: 
+        {
+          AirConditioner: 2.444,
+          WiFiRouter: 3.222,
+          Humidifier: 4.777,
+          SmartTV: 5.888,
+          Diffuser: 6.888,
+          Refrigerator: 2.2
+        }
       });
     });
 
     it("should not change original array", () => {
       const readings = [
-        { time: new Date(2021, 12, 17, 10, 24).getTime(), value: 50 },
+        { time: new Date(2021, 12, 17, 10, 24).getTime(), 
+          value: 50, 
+          details:  
+          {
+            AirConditioner: 2.444,
+            WiFiRouter: 3.222,
+            Humidifier: 4.777,
+            SmartTV: 5.888,
+            Diffuser: 6.888,
+            Refrigerator: 2.2
+          }
+        },
         {
           time: new Date(2021, 12, 17, 9, 24).getTime(),
           value: 40,
+          details: 
+          {
+            AirConditioner: 1.444,
+            WiFiRouter: 2.222,
+            Humidifier: 3.777,
+            SmartTV: 4.888,
+            Diffuser: 5.888,
+            Refrigerator: 3.2
+          }
         },
         {
           time: new Date(2021, 12, 15, 11, 34).getTime(),
           value: 25,
+          details: 
+          {
+            AirConditioner: 3.444,
+            WiFiRouter: 4.222,
+            Humidifier: 5.777,
+            SmartTV: 6.888,
+            Diffuser: 7.888,
+            Refrigerator: 1.2
+          }
         },
       ];
 
       sortByTime(readings);
       expect(readings).toHaveLength(3);
       expect(readings).toEqual([
-        { time: new Date(2021, 12, 17, 10, 24).getTime(), value: 50 },
+        { time: new Date(2021, 12, 17, 10, 24).getTime(), 
+          value: 50,
+          details:{
+            AirConditioner: 2.444,
+            WiFiRouter: 3.222,
+            Humidifier: 4.777,
+            SmartTV: 5.888,
+            Diffuser: 6.888,
+            Refrigerator: 2.2
+          }
+        
+        },
         {
           time: new Date(2021, 12, 17, 9, 24).getTime(),
           value: 40,
+          details: 
+          {
+            AirConditioner: 1.444,
+            WiFiRouter: 2.222,
+            Humidifier: 3.777,
+            SmartTV: 4.888,
+            Diffuser: 5.888,
+            Refrigerator: 3.2
+          }
         },
         {
           time: new Date(2021, 12, 15, 11, 34).getTime(),
           value: 25,
+          details: 
+          {
+            AirConditioner: 3.444,
+            WiFiRouter: 4.222,
+            Humidifier: 5.777,
+            SmartTV: 6.888,
+            Diffuser: 7.888,
+            Refrigerator: 1.2
+          }
         },
       ]);
     });

@@ -30,11 +30,11 @@ const predefinedColors = [
   'rgba(0, 128, 128, 0.2)',   // Teal
 ];
 
-const getPredefinedColor = (index) => {
+export const getPredefinedColor = (index) => {
   return predefinedColors[index % predefinedColors.length];
 };
 
-const generatePredefinedColors = (numColors) => {
+export const generatePredefinedColors = (numColors) => {
   const colors = [];
   for (let i = 0; i < numColors; i++) {
     colors.push(getPredefinedColor(i));
